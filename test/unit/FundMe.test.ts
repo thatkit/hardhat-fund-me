@@ -92,8 +92,11 @@ describe('FundMe', () => {
       await fundMe.connect(acc2).fund({ value: initFundValues[1] });
     });
 
-    it('should fail if not called by owner', async () => {
-      await expect(fundMe.connect(acc1).withdraw()).to.be.reverted;
+    it('should fail if called by attacker', async () => {
+      const attacker = acc1;
+
+      // cheaperWithdraw - is about twice cheaper
+      await expect(fundMe.connect(attacker).withdraw()).to.be.revertedWithCustomError(fundMe, 'FundMe__NotOwner');
     });
 
     it('should withdraw by owner', async () => {
@@ -102,12 +105,12 @@ describe('FundMe', () => {
 
       const ownerBalanceBefore = await ethers.provider.getBalance(owner);
 
+      // cheaperWithdraw - is about twice cheaper
       const withdrawal = await fundMe.connect(owner).withdraw();
 
       const receipt = await withdrawal.wait();
 
       const fee = receipt?.fee;
-      console.log('fee', fee);
       expect(fee).to.exist;
 
       const fundsAfter = await ethers.provider.getBalance(fundMe);
@@ -118,3 +121,5 @@ describe('FundMe', () => {
     });
   });
 });
+
+// YT: https://youtu.be/gyMwXuJrbJQ?t=41440

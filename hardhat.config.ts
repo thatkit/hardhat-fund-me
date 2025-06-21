@@ -1,5 +1,6 @@
 import { HardhatUserConfig } from 'hardhat/config';
 import '@nomicfoundation/hardhat-toolbox';
+import 'hardhat-gas-reporter';
 import 'solidity-docgen';
 
 const config: HardhatUserConfig = {
@@ -10,6 +11,9 @@ const config: HardhatUserConfig = {
         count: 3,
       },
     },
+  },
+  gasReporter: {
+    enabled: true,
   },
   docgen: {
     // Optional: Customize the configuration
